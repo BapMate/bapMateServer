@@ -1,18 +1,34 @@
 package com.bapMate.bapMateServer.global.response;
 
 import com.bapMate.bapMateServer.global.exception.base.BaseErrorCode;
+import com.bapMate.bapMateServer.global.exception.dto.ErrorReason;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Getter
-@ToString
-public class ErrorResponse extends BaseResponse {
-    private final int httpStatus;
+public class ErrorResponse {
+    private final String timestamp = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+    private final boolean success = false;
+    private String code;
+    private int status;
+    private String reason;
 
     @Builder
-    public ErrorResponse(BaseErrorCode errorCode) {
-        super(false, errorCode.getCode(), errorCode.getMessage());
-        this.httpStatus = errorCode.getHttpStatus();
+    private ErrorResponse(String code, int status, String reason) {
+        this.code = code;
+        this.status = status;
+        this.reason = reason;
+    }
+
+    public static ErrorResponse from(ErrorReason errorReason) {
+        return ErrorResponse.builder()
+                .code(errorReason.getCode())
+                .status(errorReason.getStatus())
+                .reason(errorReason.getReason())
+                .build();
     }
 }
