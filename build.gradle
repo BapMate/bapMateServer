@@ -33,6 +33,14 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+	/* Feign client */
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.8'
+	/* Feign client */
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.8'
+	implementation('io.github.openfeign:feign-jackson:12.1')
+	/* redis */
+	implementation("org.springframework.boot:spring-boot-starter-data-redis")
+	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
 
 tasks.named('test') {

@@ -9,4 +9,7 @@ public class StaticValue {
     public static final int METHOD_NOT_ALLOWED = 405;
     public static final int CONFLICT = 409;
     public static final int INTERNAL_SERVER_ERROR = 500;
+    /* token type */
+    public static final String ACCESS_TOKEN = "AccessToken";
+    public static final String REFRESH_TOKEN = "RefreshToken";
 }
