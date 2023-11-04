@@ -26,6 +26,7 @@ public class JwtIdTokenProvider {
     /* kid 서명검증없이 가져오기  */
     public String getKid(String idToken){
         try{
+            System.out.println(idToken);
             String[] idTokenParts = idToken.split("\\.");
             String encodedHeader = idTokenParts[0];
             String decodedHeader = new String(Base64.getUrlDecoder().decode(encodedHeader), StandardCharsets.UTF_8);
@@ -48,7 +49,6 @@ public class JwtIdTokenProvider {
                     .parseClaimsJws(idToken)
                     .getBody();
             return UserInfoFromIdToken.builder()
-                    .profileImage(claims.get("profileImage", String.class))
                     .email(claims.get("email", String.class))
                     .build();
 

@@ -1,17 +1,41 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+    url: jdbc:mysql://localhost:3306/bapmatedb
+    username: root
+    password: root
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+
 
   jpa:
     database: mysql
-    database-platform: org.hibernate.dialect.MySQL8Dialect
+    database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: create #update?? ???? ? ?? create
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
-        database-platform: org.hibernate.dialect.MySQL8Dialect
+        dialect: org.hibernate.dialect.MySQLDialect
+        database-platform: org.hibernate.dialect.MySQLDialect
         default_batch_fetch_size: 100
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+  access-token_exp: ${JWT_ACCESS_TOKEN_EXP}
+  refresh-token_exp: ${JWT_REFRESH_TOKEN_EXP}
+
+kakao:
+  iss: ${KAKAO_ISS}
+  client-id: ${KAKAO_CLIENT_ID}
+  client-secret: ${KAKAO_CLIENT_SECRET}
+  redirect-url: ${KAKAO_REDIRECT_URL}
+  app-key: ${KAKAO_APP_KEY}
+
+
+
+logging:
+  level:
+    feign=DEBUG:

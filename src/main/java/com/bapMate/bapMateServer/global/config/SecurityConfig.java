@@ -1,15 +1,30 @@
 package com.bapMate.bapMateServer.global.config;
 
+import com.bapMate.bapMateServer.global.config.filter.JwtAuthenticationFilter;
+import com.bapMate.bapMateServer.global.jwt.JwtIdTokenProvider;
+import com.bapMate.bapMateServer.global.jwt.JwtProvider;
+import com.bapMate.bapMateServer.global.utils.FilterExceptionProcessor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableWebSecurity
+@RequiredArgsConstructor
+@EnableGlobalMethodSecurity(
+        securedEnabled = true,
+        jsr250Enabled = true,
+        prePostEnabled = true
+)
 public class SecurityConfig {
+
+    private final JwtProvider jwtTokenProvider;
+    private final FilterExceptionProcessor filterExceptionProcessor;
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -27,7 +42,18 @@ public class SecurityConfig {
                 .disable()
 
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.NEVER);
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        http.authorizeRequests()
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/v1/**").authenticated();
+
+
+        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider,filterExceptionProcessor), UsernamePasswordAuthenticationFilter.class);
+
+
+
+
 
         return http.build();
     }

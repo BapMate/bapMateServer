@@ -35,12 +35,14 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	/* Feign client */
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.8'
-	/* Feign client */
-	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.8'
+
 	implementation('io.github.openfeign:feign-jackson:12.1')
 	/* redis */
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+	/* swagger */
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-api:2.0.4'
 }
 
 tasks.named('test') {

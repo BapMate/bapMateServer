@@ -4,15 +4,18 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.ConstructorBinding;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 @Getter
-@AllArgsConstructor
-@Component
 @ConfigurationProperties(prefix = "jwt")
 public class JwtProperties {
-    private String secretKey;
-    private Long accessTokenExp;
-    private Long refreshTokenExp;
+    private final String secretKey;
+    private final Long accessTokenExp;
+    private final Long refreshTokenExp;
+
+    public JwtProperties(String secretKey, Long accessTokenExp, Long refreshTokenExp) {
+        this.secretKey = secretKey;
+        this.accessTokenExp = accessTokenExp;
+        this.refreshTokenExp = refreshTokenExp;
+    }
 }
