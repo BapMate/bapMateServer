@@ -6,7 +6,7 @@ spring:
     password: root
   data:
     redis:
-      host: localhost
+      host: bapmate-redis-container
       port: 6379
 
 

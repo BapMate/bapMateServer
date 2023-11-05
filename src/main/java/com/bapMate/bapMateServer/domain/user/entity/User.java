@@ -3,6 +3,7 @@ package com.bapMate.bapMateServer.domain.user.entity;
 import com.bapMate.bapMateServer.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.lang.Nullable;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -17,10 +18,11 @@ public class User extends BaseTimeEntity {
     @Column(name = "user_id")
     private Long id;
 
-    @Embedded
-    private Profile profile;
-
+    @Nullable
+    private String name;
     @Embedded
     private AuthInfo authInfo;
+    @Nullable
+    private String universityName;
 
 }
