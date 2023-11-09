@@ -25,7 +25,7 @@ public class SwaggerConfig {
 
     private Info getSwaggerInfo() {
         License license = new License();
-        license.setName("Clutch");
+        license.setName("BapMate");
 
         return new Info()
                 .title("\"밥메이트 API문서\"")
