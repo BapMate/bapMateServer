@@ -27,8 +27,6 @@ public class UserKeywordService {
 
     public void setUserHobby(User user, HobbyRequestDto requestDto){
         Hobby hobby = requestDto.toEntity();
-
-        if(user == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST); // 수정 예정
         hobby.setUser(user);
 
         hobbyRepository.save(hobby);
@@ -36,8 +34,6 @@ public class UserKeywordService {
 
     public void setUserPersonality(User user, PersonalityRequestDto requestDto){
         Personality personality = requestDto.toEntity();
-
-        if(user == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST); // 수정 예정
         personality.setUser(user);
 
         personalityRepository.save(personality);
@@ -45,8 +41,6 @@ public class UserKeywordService {
 
     public void setUserEating(User user, EatingRequestDto requestDto){
         Eating eating = requestDto.toEntity();
-
-        if(user == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST); // 수정 예정
         eating.setUser(user);
 
         eatingRepository.save(eating);
