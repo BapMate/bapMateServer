@@ -15,6 +15,7 @@ public class Eating {
     @Column(name = "eating_id")
     private Long id;
 
+    @Setter
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;

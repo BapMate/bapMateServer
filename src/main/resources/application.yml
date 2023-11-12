@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    url: jdbc:mysql://localhost:3306/bapmatedb
     username: root
-    password: root
+    password: yjky!0724
   data:
     redis:
       host: bapmate-redis-container
