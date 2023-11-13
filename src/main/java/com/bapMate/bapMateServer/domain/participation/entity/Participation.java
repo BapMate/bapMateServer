@@ -26,6 +26,6 @@ public class Participation extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private MeetUpStatus meetUpStatus;
+    private String meetUpStatus;
 }
 

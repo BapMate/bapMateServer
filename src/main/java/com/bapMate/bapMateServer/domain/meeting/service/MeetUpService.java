@@ -23,7 +23,7 @@ public class MeetUpService {
         Participation participation = Participation.builder()
                 .meetUp(meetUp)
                 .user(user)
-                .meetUpStatus(MeetUpStatus.HOST)
+                .meetUpStatus(MeetUpStatus.HOST.getStatus())
                 .build();
         participationRepository.save(participation);
     }
