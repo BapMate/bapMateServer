@@ -3,7 +3,6 @@ package com.bapMate.bapMateServer.domain.meeting.entity;
 import com.bapMate.bapMateServer.domain.meeting.enums.MeetUpAtmosphere;
 import com.bapMate.bapMateServer.domain.meeting.enums.RegionAtmosphere;
 import com.bapMate.bapMateServer.global.entity.BaseTimeEntity;
-import com.bapMate.bapMateServer.global.utils.enumUtils.MeetUpAtmosphereConverter;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,9 +26,7 @@ public class MeetUp extends BaseTimeEntity {
     private LocalDateTime date;
     private String restaurant;
     private int numberOfPeople;
-
-
-    @Convert(converter = MeetUpAtmosphereConverter.class)
+    @Enumerated(EnumType.STRING)
     private MeetUpAtmosphere meetUpAtmosphere;
     @Enumerated(EnumType.STRING)
     private RegionAtmosphere regionAtmosphere;

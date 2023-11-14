@@ -18,13 +18,18 @@ public class MeetUpService {
     private final ParticipationRepository participationRepository;
     private final MeetUpRepository meetUpRepository;
     public void uploadMeetUp(User user, MeetUpRequestDto requestDto) {
-        MeetUp meetUp = requestDto.toEntity();
-        meetUpRepository.save(meetUp);
+        MeetUp meetUp = turnCheckToOne(requestDto);
         Participation participation = Participation.builder()
                 .meetUp(meetUp)
                 .user(user)
                 .meetUpStatus(MeetUpStatus.HOST.getStatus())
                 .build();
         participationRepository.save(participation);
+    }
+
+    private MeetUp turnCheckToOne(MeetUpRequestDto requestDto) {
+        MeetUp meetUp = requestDto.toEntity();
+        meetUpRepository.save(meetUp);
+        return meetUp;
     }
 }
