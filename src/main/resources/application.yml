@@ -24,8 +24,8 @@ spring:
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
-  access-token_exp: ${JWT_ACCESS_TOKEN_EXP}
-  refresh-token_exp: ${JWT_REFRESH_TOKEN_EXP}
+  access-token_exp: 1209600000
+  refresh-token_exp: 1209600000
 
 kakao:
   iss: ${KAKAO_ISS}
@@ -39,3 +39,4 @@ kakao:
 logging:
   level:
     feign=DEBUG:
+
