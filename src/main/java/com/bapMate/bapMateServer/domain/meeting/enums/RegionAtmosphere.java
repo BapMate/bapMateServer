@@ -11,4 +11,14 @@ public enum RegionAtmosphere {
 
     public String getTitle() {return title;}
     public int getCheck() {return check;}
+
+    // String 값을 Enum으로 변환하는 메서드
+    public static RegionAtmosphere fromTitle(String title) {
+        for (RegionAtmosphere atmosphere : RegionAtmosphere.values()) {
+            if (atmosphere.title.equals(title)) {
+                return atmosphere;
+            }
+        }
+        throw new IllegalArgumentException("Unknown title: " + title);
+    }
 }

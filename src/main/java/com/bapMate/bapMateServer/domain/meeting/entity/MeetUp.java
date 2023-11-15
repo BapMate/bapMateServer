@@ -2,11 +2,15 @@ package com.bapMate.bapMateServer.domain.meeting.entity;
 
 import com.bapMate.bapMateServer.domain.meeting.enums.MeetUpAtmosphere;
 import com.bapMate.bapMateServer.domain.meeting.enums.RegionAtmosphere;
+import com.bapMate.bapMateServer.domain.participation.entity.Participation;
+import com.bapMate.bapMateServer.domain.user.entity.User;
 import com.bapMate.bapMateServer.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -15,21 +19,34 @@ import java.time.LocalDateTime;
 @Builder
 public class MeetUp extends BaseTimeEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "meeting_id")
     private Long id;
-
     private String name;
     private String introduce;
     private String chatRoomLink;
     private String region;
     private LocalDateTime date;
     private String restaurant;
+    private int currentNumberOfPeople;
     private int numberOfPeople;
     @Enumerated(EnumType.STRING)
     private MeetUpAtmosphere meetUpAtmosphere;
     @Enumerated(EnumType.STRING)
     private RegionAtmosphere regionAtmosphere;
     private String representationImage;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "meetUp")
+    private List<Participation> allParticipants;
 
+    public int updateNumberOfPeople(int currentNumber) {
+        this.currentNumberOfPeople = currentNumber + 1;
+        return currentNumberOfPeople;
+    }
+
+    public void addParticipation(Participation participation) {
+        if ( allParticipants== null) {
+            allParticipants = new ArrayList<>();
+        }
+        allParticipants.add(participation);
+    }
 }

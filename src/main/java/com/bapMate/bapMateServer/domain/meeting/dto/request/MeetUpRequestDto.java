@@ -18,20 +18,22 @@ public class MeetUpRequestDto {
     private LocalDateTime date;
     private String restaurant;
     private int numberOfPeople;
-    private MeetUpAtmosphere meetUpAtmosphere;
-    private RegionAtmosphere regionAtmosphere;
+    private String meetUpAtmosphere;
+    private String regionAtmosphere;
     private String representationImage;
 
     public MeetUp toEntity() {
+        RegionAtmosphere regionAtmosphereEnum = RegionAtmosphere.fromTitle(regionAtmosphere);
+        MeetUpAtmosphere meetUpAtmosphereEnum = MeetUpAtmosphere.fromTitle(meetUpAtmosphere);
         return MeetUp.builder()
                 .chatRoomLink(chatRoomLink)
                 .date(date)
-                .meetUpAtmosphere(meetUpAtmosphere)
+                .meetUpAtmosphere(meetUpAtmosphereEnum)
                 .introduce(introduce)
                 .restaurant(restaurant)
                 .numberOfPeople(numberOfPeople)
                 .region(region)
-                .regionAtmosphere(regionAtmosphere)
+                .regionAtmosphere(regionAtmosphereEnum)
                 .representationImage(representationImage)
                 .name(name)
                 .build();

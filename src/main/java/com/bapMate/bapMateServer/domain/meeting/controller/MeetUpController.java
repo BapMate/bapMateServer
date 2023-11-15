@@ -1,6 +1,7 @@
 package com.bapMate.bapMateServer.domain.meeting.controller;
 
 import com.bapMate.bapMateServer.domain.meeting.dto.request.MeetUpRequestDto;
+import com.bapMate.bapMateServer.domain.meeting.entity.MeetUp;
 import com.bapMate.bapMateServer.domain.meeting.service.MeetUpService;
 import com.bapMate.bapMateServer.domain.participation.entity.Participation;
 import com.bapMate.bapMateServer.domain.participation.repository.ParticipationRepository;
@@ -16,6 +17,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,13 +42,28 @@ public class MeetUpController {
     }
     @Operation(summary = "생성한 모임을 확인합니다.")
     @GetMapping("/host")
-    public SuccessResponse<Object> getCreatedMeetUp() {
+    public SuccessResponse<List<MeetUp>> getCreatedMeetUp() {
         User user = authentiatedUserUtils.getCurrentUser();
 
-        Participation participation = participationService.getParticipation(user);
-        SuccessResponse<Object> successResponse = SuccessResponse.onSuccess(200,participation);
-
+        List<MeetUp> participation = participationService.getParticipation(user);
+        System.out.println(participation.size());
+        System.out.println(participation.get(0).getName());
+        SuccessResponse<List<MeetUp>> successResponse = SuccessResponse.onSuccess(200, participation);
+        System.out.println(successResponse.getData());
         return successResponse;
     }
+
+    @Operation(summary = "모임에 참여합니다")
+    @PostMapping("/participate/{meetUpId}")
+    public SuccessResponse<Object> participateMeetUp(@RequestParam Long meetUpId){
+        User user = authentiatedUserUtils.getCurrentUser();
+
+        meetUpService.participateMeetUp(user,meetUpId);
+
+        SuccessResponse<Object> successResponse = SuccessResponse.onSuccess(200);
+        return successResponse;
+    }
+
+
 
 }
