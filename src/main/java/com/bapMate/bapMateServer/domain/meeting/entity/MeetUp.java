@@ -35,18 +35,10 @@ public class MeetUp extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private RegionAtmosphere regionAtmosphere;
     private String representationImage;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "meetUp")
-    private List<Participation> allParticipants;
 
     public int updateNumberOfPeople(int currentNumber) {
         this.currentNumberOfPeople = currentNumber + 1;
         return currentNumberOfPeople;
     }
 
-    public void addParticipation(Participation participation) {
-        if ( allParticipants== null) {
-            allParticipants = new ArrayList<>();
-        }
-        allParticipants.add(participation);
-    }
 }

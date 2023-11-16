@@ -53,6 +53,18 @@ public class MeetUpController {
         return successResponse;
     }
 
+    @Operation(summary = "참여한 모임을 확인합니다.")
+    @GetMapping("/participate")
+    public SuccessResponse<List<MeetUp>> getParticipatedMeetUp() {
+        User user = authentiatedUserUtils.getCurrentUser();
+
+        List<MeetUp> participation = participationService.getParticipations(user);
+
+        SuccessResponse<List<MeetUp>> successResponse = SuccessResponse.onSuccess(200, participation);
+        System.out.println(successResponse.getData());
+        return successResponse;
+    }
+
     @Operation(summary = "모임에 참여합니다")
     @PostMapping("/participate/{meetUpId}")
     public SuccessResponse<Object> participateMeetUp(@RequestParam Long meetUpId){
