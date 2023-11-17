@@ -3,10 +3,12 @@ package com.bapMate.bapMateServer.global.S3;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,9 +16,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Date;
+import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,17 +30,29 @@ public class S3Service {
     private String bucket;
 
     private final AmazonS3 amazonS3;
+    private final AmazonS3Client amazonS3Client;
+
 
     /* 1. 파일 업로드 */
-    public String upload(MultipartFile multipartFile, String s3FileName) throws IOException {
-        // 메타데이터 생성
-        ObjectMetadata objMeta = new ObjectMetadata();
-        objMeta.setContentLength(multipartFile.getInputStream().available());
-        // putObject(버킷명, 파일명, 파일데이터, 메타데이터)로 S3에 객체 등록
-        amazonS3.putObject(bucket, s3FileName, multipartFile.getInputStream(), objMeta);
-        // 등록된 객체의 url 반환 (decoder: url 안의 한글or특수문자 깨짐 방지)
-        return URLDecoder.decode(amazonS3.getUrl(bucket, s3FileName).toString(), "utf-8");
+    public String upload(MultipartFile multipartFile) {
+        // 메타데이터 설정
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentType(multipartFile.getContentType());
+        objectMetadata.setContentLength(multipartFile.getSize());
+
+        // 실제 S3 bucket 디렉토리명 설정
+        // 파일명 중복을 방지하기 위한 UUID 추가
+        String fileName = bucket + "/" + UUID.randomUUID() + "." + multipartFile.getOriginalFilename();
+
+        try (InputStream inputStream = multipartFile.getInputStream()) {
+            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata));
+        } catch (IOException e) {
+            log.error("S3 파일 업로드에 실패했습니다. {}", e.getMessage());
+            throw new IllegalStateException("S3 파일 업로드에 실패했습니다.");
+        }
+        return amazonS3Client.getUrl(bucket, fileName).toString();
     }
+
 
     /* 2. 파일 삭제 */
     public void delete (String keyName) {

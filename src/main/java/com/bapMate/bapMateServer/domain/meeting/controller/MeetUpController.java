@@ -15,8 +15,11 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +33,19 @@ public class MeetUpController {
     private final MeetUpService meetUpService;
     private final ParticipationService participationService;
     private final AuthentiatedUserUtils authentiatedUserUtils;
+
+    @Operation(description = "모임 대표 이미지")
+    @PostMapping(value = "/image/{meetUpId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public SuccessResponse<Object> uploadImage(@PathVariable Long meetUpId,@RequestParam("file") MultipartFile file) throws IOException {
+        try {
+            meetUpService.uploadImage(meetUpId, file);
+            SuccessResponse<Object> successResponse = SuccessResponse.onSuccess(200);
+            return successResponse;
+        } catch (IOException e) {
+            throw  new IllegalArgumentException("오류");
+        }
+    }
+
     @Operation(summary = "모임을 생성합니다.")
     @PostMapping("/host")
     public SuccessResponse<Object> createMeetUp(@RequestBody MeetUpRequestDto meetUpRequestDto) {

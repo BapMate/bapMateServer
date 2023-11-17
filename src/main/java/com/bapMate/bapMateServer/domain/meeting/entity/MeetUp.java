@@ -40,5 +40,8 @@ public class MeetUp extends BaseTimeEntity {
         this.currentNumberOfPeople = currentNumber + 1;
         return currentNumberOfPeople;
     }
+    public void updateImgUrl(String imageUrl) {
+        this.representationImage = imageUrl;
+    }
 
 }

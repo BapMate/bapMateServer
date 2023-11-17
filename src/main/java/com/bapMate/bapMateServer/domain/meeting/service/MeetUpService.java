@@ -11,12 +11,16 @@ import com.bapMate.bapMateServer.domain.participation.entity.Participation;
 import com.bapMate.bapMateServer.domain.participation.repository.ParticipationRepository;
 import com.bapMate.bapMateServer.domain.participation.service.ParticipationService;
 import com.bapMate.bapMateServer.domain.user.entity.User;
+import com.bapMate.bapMateServer.domain.user.exception.UserNotFoundException;
+import com.bapMate.bapMateServer.global.S3.S3Service;
 import com.bapMate.bapMateServer.global.exception.handler.GlobalExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.ErrorResponseException;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +30,17 @@ public class MeetUpService {
     private final ParticipationRepository participationRepository;
     private final MeetUpRepository meetUpRepository;
     private final ParticipationService participationService;
+    private final S3Service s3UploadService;
+
+    @Transactional
+    public void uploadImage(Long meetUpId, MultipartFile file) throws IOException {
+        // S3에 이미지 파일 업로드 및 업로드된 파일의 URL 생성
+        String imageUrl = s3UploadService.upload(file);
+        MeetUp meetUp = meetUpRepository.findById(meetUpId).orElseThrow(UserNotFoundException::new);
+
+        meetUp.updateImgUrl(imageUrl);
+        meetUpRepository.save(meetUp);
+    }
 
     public MeetUp uploadMeetUp(User user, MeetUpRequestDto requestDto) {
         MeetUp meetUp = turnCheckToOne(requestDto);

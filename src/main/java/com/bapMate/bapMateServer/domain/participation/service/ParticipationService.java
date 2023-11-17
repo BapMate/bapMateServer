@@ -39,7 +39,7 @@ public class ParticipationService {
         if(user.getId() == null) {
             throw new UserNotFoundException();
         }
-        return participation
+        return participation;
     }
 
     public List<MeetUp> getParticipations(User user) {
