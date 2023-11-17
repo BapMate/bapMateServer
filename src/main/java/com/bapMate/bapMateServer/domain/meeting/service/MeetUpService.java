@@ -5,6 +5,7 @@ import com.bapMate.bapMateServer.domain.meeting.entity.MeetUp;
 import com.bapMate.bapMateServer.domain.meeting.enums.MeetUpStatus;
 import com.bapMate.bapMateServer.domain.meeting.exception.FullCapacityException;
 import com.bapMate.bapMateServer.domain.meeting.exception.MeetingNotFoundException;
+import com.bapMate.bapMateServer.domain.meeting.exception.NotAllowedToParticipateException;
 import com.bapMate.bapMateServer.domain.meeting.repository.MeetUpRepository;
 import com.bapMate.bapMateServer.domain.participation.entity.Participation;
 import com.bapMate.bapMateServer.domain.participation.repository.ParticipationRepository;
@@ -80,7 +81,7 @@ public class MeetUpService {
     }
 
     @Transactional
-    private void validateCapacity(MeetUp meetUp,Long meetUpId) {
+    void validateCapacity(MeetUp meetUp, Long meetUpId) {
         //meetUp의 count 갱신하기 다 찼으면 에러 발생시키기 -FullCapacity
         int number = meetUp.getCurrentNumberOfPeople();
         if(!(number < meetUp.getNumberOfPeople())){
@@ -102,7 +103,7 @@ public class MeetUpService {
 // hostUserId가 존재하고, 그 값이 현재 사용자의 ID와 같다면 예외를 던집니다.
         hostUserId.ifPresent(id -> {
             if (id.equals(user.getId())) {
-                throw new IllegalArgumentException("만든 모임은 참여할 수 없습니다");
+                throw new NotAllowedToParticipateException();
             }
         });
     }
