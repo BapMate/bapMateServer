@@ -14,7 +14,7 @@ import lombok.*;
 @Entity
 public class Participation extends BaseTimeEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "participation_id")
     private Long id;
 

@@ -16,4 +16,13 @@ public enum MeetUpAtmosphere {
 
     public String getTitle() {return title;}
     public int getCheck() {return check;}
+
+    public static MeetUpAtmosphere fromTitle(String title) {
+        for (MeetUpAtmosphere atmosphere : MeetUpAtmosphere.values()) {
+            if (atmosphere.title.equals(title)) {
+                return atmosphere;
+            }
+        }
+        return null; // 매칭되는 값이 없을 경우
+    }
 }
