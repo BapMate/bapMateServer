@@ -78,6 +78,8 @@ jobs:
           docker run -d --log-driver=syslog -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/bapmate:latest
           docker rm $(docker ps --filter 'status=exited' -a -q)
           docker image prune -a -f
+          sleep 5
+          docker run -d --rm --net redis-bridge --name bapmate-redis-container -p 6379:6379 bapmate-redis-container
 
 
 
