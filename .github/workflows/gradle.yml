@@ -53,10 +53,10 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build -x test
 
-    - name: Start Redis Container
-      run: |
-        docker run -d -p 6379:6379 --name bapmate-redis-container redis:latest
-      shell: bash
+#    - name: Start Redis Container
+#      run: |
+#        docker run -d -p 6379:6379 --name bapmate-redis-container redis:latest
+#      shell: bash
 
     - name: Docker build
       run: |
@@ -75,11 +75,11 @@ jobs:
         script: |
           docker pull ${{ secrets.DOCKER_USERNAME }}/bapmate:latest
           docker stop $(docker ps -a -q)
-          docker run -d --log-driver=syslog -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/bapmate:latest
-          docker rm $(docker ps --filter 'status=exited' -a -q)
+#          docker run -d --log-driver=syslog -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/bapmate:latest
+#          docker rm $(docker ps --filter 'status=exited' -a -q)
+          docker-compose up -d
           docker image prune -a -f
-          sleep 5
-          docker run -d --rm --net redis-bridge --name bapmate-redis-container -p 6379:6379 bapmate-redis-container
+        
 
 
 
