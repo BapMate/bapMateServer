@@ -55,7 +55,7 @@ jobs:
 
     - name: Start Redis Container
       run: |
-        docker run -d -p 6379:6379 --name my-redis redis:latest
+        docker run -d -p 6379:6379 --name bapmate-redis-container redis:latest
       shell: bash
 
     - name: Docker build
