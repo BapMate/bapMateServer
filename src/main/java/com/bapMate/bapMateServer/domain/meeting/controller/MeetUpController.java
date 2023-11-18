@@ -35,11 +35,11 @@ public class MeetUpController {
     private final AuthentiatedUserUtils authentiatedUserUtils;
 
     @Operation(description = "모임 대표 이미지")
-    @PostMapping(value = "/image/{meetUpId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public SuccessResponse<Object> uploadImage(@PathVariable Long meetUpId,@RequestParam("file") MultipartFile file) throws IOException {
+    @PostMapping(value = "/image", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public SuccessResponse<Object> uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
         try {
-            meetUpService.uploadImage(meetUpId, file);
-            SuccessResponse<Object> successResponse = SuccessResponse.onSuccess(200);
+            String imageUrl = meetUpService.uploadImage(file);
+            SuccessResponse<Object> successResponse = SuccessResponse.onSuccess(200,imageUrl);
             return successResponse;
         } catch (IOException e) {
             throw  new IllegalArgumentException("오류");
