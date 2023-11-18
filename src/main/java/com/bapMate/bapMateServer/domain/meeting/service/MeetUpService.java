@@ -32,14 +32,15 @@ public class MeetUpService {
     private final ParticipationService participationService;
     private final S3Service s3UploadService;
 
-    @Transactional
-    public void uploadImage(Long meetUpId, MultipartFile file) throws IOException {
+    //@Transactional
+    public String uploadImage(MultipartFile file) throws IOException {
         // S3에 이미지 파일 업로드 및 업로드된 파일의 URL 생성
         String imageUrl = s3UploadService.upload(file);
-        MeetUp meetUp = meetUpRepository.findById(meetUpId).orElseThrow(UserNotFoundException::new);
-
-        meetUp.updateImgUrl(imageUrl);
-        meetUpRepository.save(meetUp);
+//        MeetUp meetUp = meetUpRepository.findById(meetUpId).orElseThrow(UserNotFoundException::new);
+//
+//        meetUp.updateImgUrl(imageUrl);
+//        meetUpRepository.save(meetUp);
+        return imageUrl;
     }
 
     public MeetUp uploadMeetUp(User user, MeetUpRequestDto requestDto) {
