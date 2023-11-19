@@ -23,33 +23,33 @@ public class Hobby {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private Boolean running;
-    private Boolean climbing;
-    private Boolean tennis;
-    private Boolean hiking;
-    private Boolean activities;
+    private int running;
+    private int climbing;
+    private int tennis;
+    private int hiking;
+    private int activities;
 
-    private Boolean traveling;
-    private Boolean new_restaurants;
-    private Boolean visiting_hot_spots;
-    private Boolean exchange_student;
+    private int traveling;
+    private int new_restaurants;
+    private int visiting_hot_spots;
+    private int exchange_student;
 
-    private Boolean idol;
-    private Boolean anime;
-    private Boolean pets;
-    private Boolean electronic_gadgets;
-    private Boolean collector;
+    private int idol;
+    private int anime;
+    private int pets;
+    private int electronic_gadgets;
+    private int collector;
 
-    private Boolean music;
-    private Boolean exhibitions;
-    private Boolean movies;
-    private Boolean drawing;
-    private Boolean musicals;
+    private int music;
+    private int exhibitions;
+    private int movies;
+    private int drawing;
+    private int musicals;
 
-    private Boolean foreign_languages;
-    private Boolean cooking;
-    private Boolean stocks;
-    private Boolean job_preparation;
+    private int foreign_languages;
+    private int cooking;
+    private int stocks;
+    private int job_preparation;
 
     /**
      * String 리스트로 받아와서 존재하는 필드명을 true로 바꿔주게끔
@@ -65,42 +65,42 @@ public class Hobby {
         for (String description : hobbyDescriptions) {
             HobbyType hobbyType = HobbyType.fromDescription(description);
             if (hobbyType != null) {
-                setHobbyField(this, hobbyType.name().toLowerCase(), true);
+                setHobbyField(this, hobbyType.name().toLowerCase(), 1);
             }
         }
     }
 
     private void initializeHobbies() {
-        this.running = false;
-        this.climbing = false;
-        this.tennis = false;
-        this.hiking = false;
-        this.activities = false;
+        this.running = 0;
+        this.climbing = 0;
+        this.tennis = 0;
+        this.hiking = 0;
+        this.activities = 0;
 
-        this.traveling = false;
-        this.new_restaurants = false;
-        this.visiting_hot_spots = false;
-        this.exchange_student = false;
+        this.traveling = 0;
+        this.new_restaurants = 0;
+        this.visiting_hot_spots = 0;
+        this.exchange_student = 0;
 
-        this.idol = false;
-        this.anime = false;
-        this.pets = false;
-        this.electronic_gadgets = false;
-        this.collector = false;
+        this.idol = 0;
+        this.anime = 0;
+        this.pets = 0;
+        this.electronic_gadgets = 0;
+        this.collector = 0;
 
-        this.music = false;
-        this.exhibitions = false;
-        this.movies = false;
-        this.drawing = false;
-        this.musicals = false;
+        this.music = 0;
+        this.exhibitions = 0;
+        this.movies = 0;
+        this.drawing = 0;
+        this.musicals = 0;
 
-        this.foreign_languages = false;
-        this.cooking = false;
-        this.stocks = false;
-        this.job_preparation = false;
+        this.foreign_languages = 0;
+        this.cooking = 0;
+        this.stocks = 0;
+        this.job_preparation = 0;
     }
 
-    private void setHobbyField(Hobby hobby, String fieldName, boolean value) {
+    private void setHobbyField(Hobby hobby, String fieldName, int value) {
         try {
             Field field = hobby.getClass().getDeclaredField(fieldName);
             field.setAccessible(true);
