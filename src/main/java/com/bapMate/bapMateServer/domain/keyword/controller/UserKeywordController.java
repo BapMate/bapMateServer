@@ -1,7 +1,7 @@
 package com.bapMate.bapMateServer.domain.keyword.controller;
 
 import com.bapMate.bapMateServer.domain.keyword.dto.request.EatingRequestDto;
-import com.bapMate.bapMateServer.domain.keyword.dto.request.HobbyRequestDto;
+import com.bapMate.bapMateServer.domain.keyword.dto.request.HobbyRequestDtoRe;
 import com.bapMate.bapMateServer.domain.keyword.dto.request.PersonalityRequestDto;
 import com.bapMate.bapMateServer.domain.keyword.service.UserKeywordService;
 import com.bapMate.bapMateServer.domain.user.entity.User;
@@ -26,12 +26,22 @@ public class UserKeywordController {
     private final UserKeywordService userKeywordService;
     private final AuthentiatedUserUtils authentiatedUserUtils;
 
+//    @Operation(summary = "사용자의 취미 키워드를 받습니다.")
+//    @PostMapping("/userHobby")
+//    public SuccessResponse<Object> setUserHobby(@Valid @RequestBody HobbyRequestDto requestDto) {
+//
+//        User user = authentiatedUserUtils.getCurrentUser(); // 유저 정보 가져오기
+//        userKeywordService.setUserHobby(user, requestDto);
+//
+//        SuccessResponse<Object> successResponse = SuccessResponse.onSuccess(200);
+//        return successResponse;
+//    }
+
     @Operation(summary = "사용자의 취미 키워드를 받습니다.")
     @PostMapping("/userHobby")
-    public SuccessResponse<Object> setUserHobby(@Valid @RequestBody HobbyRequestDto requestDto) {
-
-        User user = authentiatedUserUtils.getCurrentUser(); // 유저 정보 가져오기
-        userKeywordService.setUserHobby(user, requestDto);
+    public SuccessResponse<Object> setUserHobby(@Valid @RequestBody HobbyRequestDtoRe requestDto) {
+        User user = authentiatedUserUtils.getCurrentUser();
+        userKeywordService.setUserHobbyRe(user, requestDto);
 
         SuccessResponse<Object> successResponse = SuccessResponse.onSuccess(200);
         return successResponse;
