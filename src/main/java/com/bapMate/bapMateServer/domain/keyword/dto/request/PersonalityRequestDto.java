@@ -10,49 +10,49 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PersonalityRequestDto {
     @NotNull
-    private Boolean humorous;
+    private int humorous;
     @NotNull
-    private Boolean lively;
+    private int lively;
     @NotNull
-    private Boolean talkative;
+    private int talkative;
     @NotNull
-    private Boolean high_energy;
+    private int high_energy;
 
     @NotNull
-    private Boolean constructive;
+    private int constructive;
     @NotNull
-    private Boolean self_improving;
+    private int self_improving;
     @NotNull
-    private Boolean passionate;
+    private int passionate;
     @NotNull
-    private Boolean ambitious;
+    private int ambitious;
 
     @NotNull
-    private Boolean empathetic;
+    private int empathetic;
     @NotNull
-    private Boolean sensible;
+    private int sensible;
     @NotNull
-    private Boolean approachable;
+    private int approachable;
     @NotNull
-    private Boolean good_listener;
+    private int good_listener;
 
     @NotNull
-    private Boolean shy;
+    private int shy;
     @NotNull
-    private Boolean reserved;
+    private int reserved;
     @NotNull
-    private Boolean quiet;
+    private int quiet;
     @NotNull
-    private Boolean timid;
+    private int timid;
 
     @NotNull
-    private Boolean spontaneous;
+    private int spontaneous;
     @NotNull
-    private Boolean adventurous;
+    private int adventurous;
     @NotNull
-    private Boolean creative;
+    private int creative;
     @NotNull
-    private Boolean good_under_pressure;
+    private int good_under_pressure;
 
     @Builder
     public Personality toEntity(){
