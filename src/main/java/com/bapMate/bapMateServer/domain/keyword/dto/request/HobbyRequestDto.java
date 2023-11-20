@@ -11,55 +11,55 @@ import lombok.NoArgsConstructor;
 public class HobbyRequestDto {
 
     @NotNull
-    private Boolean running;
+    private int running;
     @NotNull
-    private Boolean climbing;
+    private int climbing;
     @NotNull
-    private Boolean tennis;
+    private int tennis;
     @NotNull
-    private Boolean hiking;
+    private int hiking;
     @NotNull
-    private Boolean activities;
+    private int activities;
 
     @NotNull
-    private Boolean traveling;
+    private int traveling;
     @NotNull
-    private Boolean new_restaurants;
+    private int new_restaurants;
     @NotNull
-    private Boolean visiting_hot_spots;
+    private int visiting_hot_spots;
     @NotNull
-    private Boolean exchange_student;
+    private int exchange_student;
 
     @NotNull
-    private Boolean idol;
+    private int idol;
     @NotNull
-    private Boolean anime;
+    private int anime;
     @NotNull
-    private Boolean pets;
+    private int pets;
     @NotNull
-    private Boolean electronic_gadgets;
+    private int electronic_gadgets;
     @NotNull
-    private Boolean collector;
+    private int collector;
 
     @NotNull
-    private Boolean music;
+    private int music;
     @NotNull
-    private Boolean exhibitions;
+    private int exhibitions;
     @NotNull
-    private Boolean movies;
+    private int movies;
     @NotNull
-    private Boolean drawing;
+    private int drawing;
     @NotNull
-    private Boolean musicals; // 연극 or 뮤지컬
+    private int musicals; // 연극 or 뮤지컬
 
     @NotNull
-    private Boolean foreign_languages;
+    private int foreign_languages;
     @NotNull
-    private Boolean cooking;
+    private int cooking;
     @NotNull
-    private Boolean stocks;
+    private int stocks;
     @NotNull
-    private Boolean job_preparation;
+    private int job_preparation;
 
     @Builder
     public Hobby toEntity(){
