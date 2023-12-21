@@ -1,6 +1,8 @@
 package com.bapMate.bapMateServer.domain.meeting.service;
 
 import com.bapMate.bapMateServer.domain.meeting.dto.request.MeetUpRequestDto;
+import com.bapMate.bapMateServer.domain.meeting.dto.response.MeetUpChatGptResponseDto;
+import com.bapMate.bapMateServer.domain.meeting.dto.response.MeetUpResponseDto;
 import com.bapMate.bapMateServer.domain.meeting.entity.MeetUp;
 import com.bapMate.bapMateServer.domain.meeting.enums.MeetUpStatus;
 import com.bapMate.bapMateServer.domain.meeting.exception.FullCapacityException;
@@ -15,12 +17,15 @@ import com.bapMate.bapMateServer.domain.user.exception.UserNotFoundException;
 import com.bapMate.bapMateServer.global.S3.S3Service;
 import com.bapMate.bapMateServer.global.exception.handler.GlobalExceptionHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.ErrorResponseException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -127,5 +132,19 @@ public class MeetUpService {
     @Transactional
     public void participateMeetUp(Long meetUpId) {
         meetUpRepository.incrementCurrentNumberOfPeople(meetUpId);
+    }
+
+    public ResponseEntity<?> chatGptMeetUp(List<String> meetUps) {
+        List<MeetUp> meetUpList = new ArrayList<>();
+
+        // Assuming meetUpRepository.findByMeetUpAtmosphere returns Optional<MeetUp>
+        Optional<MeetUp> optionalMeetUp0 = meetUpRepository.findByMeetUpAtmosphere(meetUps.get(0));
+        optionalMeetUp0.ifPresent(meetUpList::add);
+
+        Optional<MeetUp> optionalMeetUp1 = meetUpRepository.findByMeetUpAtmosphere(meetUps.get(1));
+        optionalMeetUp1.ifPresent(meetUpList::add);
+
+        MeetUpChatGptResponseDto responseDTO = new MeetUpChatGptResponseDto(meetUpList, "Meetups retrieved successfully");
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 }
