@@ -4,6 +4,11 @@ import com.bapMate.bapMateServer.domain.chatgpt.config.ChatGptConfig;
 import com.bapMate.bapMateServer.domain.chatgpt.dto.request.ChatGptRequestDto;
 import com.bapMate.bapMateServer.domain.chatgpt.dto.response.ChatGptResponseDto;
 import com.bapMate.bapMateServer.domain.chatgpt.entity.ChatGptMessage;
+import com.bapMate.bapMateServer.domain.keyword.entity.Hobby;
+import com.bapMate.bapMateServer.domain.keyword.entity.Personality;
+import com.bapMate.bapMateServer.domain.keyword.repository.HobbyRepository;
+import com.bapMate.bapMateServer.domain.keyword.repository.PersonalityRepository;
+import com.bapMate.bapMateServer.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +20,7 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +30,8 @@ import java.util.List;
 public class ChatGptService {
 
     private final RestTemplate restTemplate;
+    private final HobbyRepository hobbyRepository;
+    private final PersonalityRepository personalityRepository;
 
 
     //api key를 application.yml에 넣어두었습니다.
@@ -70,6 +78,41 @@ public class ChatGptService {
         //         .color(test.getChoices().get(0).getMessage().getContent())
          //       .build();
         //return chatGptColorResponseDTO;
+    }
+
+
+    public List<String> getHobbyAndPersonality(User user){
+        Hobby hobby = hobbyRepository.findByUser(user);
+        Personality personality = personalityRepository.findByUser(user);
+
+        List<String> trueFields = getTrueBooleanFields(hobby);
+
+
+
+    }
+
+    public static List<String> getTrueBooleanFields(Object entity) {
+        List<String> trueFields = new ArrayList<>();
+        Class<?> entityClass = entity.getClass();
+
+        for (Field field : entityClass.getDeclaredFields()) {
+            if (field.getType().equals(Boolean.class) && isFieldTrue(entity, field)) {
+                trueFields.add(field.getName());
+            }
+        }
+
+        return trueFields;
+    }
+
+    private static boolean isFieldTrue(Object entity, Field field) {
+        try {
+            field.setAccessible(true);
+            Boolean value = (Boolean) field.get(entity);
+            return value != null && value;
+        } catch (IllegalAccessException e) {
+            // 예외 처리 로직 추가
+            return false;
+        }
     }
 
 
