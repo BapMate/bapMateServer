@@ -7,6 +7,7 @@ import com.bapMate.bapMateServer.domain.participation.entity.Participation;
 import com.bapMate.bapMateServer.domain.participation.repository.ParticipationRepository;
 import com.bapMate.bapMateServer.domain.participation.service.ParticipationService;
 import com.bapMate.bapMateServer.domain.user.entity.User;
+import com.bapMate.bapMateServer.global.exception.dto.ErrorReason;
 import com.bapMate.bapMateServer.global.response.SuccessResponse;
 import com.bapMate.bapMateServer.global.utils.AuthentiatedUserUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -65,6 +66,16 @@ public class MeetUpController {
         System.out.println(participation.size());
         System.out.println(participation.get(0).getName());
         SuccessResponse<List<MeetUp>> successResponse = SuccessResponse.onSuccess(200, participation);
+        System.out.println(successResponse.getData());
+        return successResponse;
+    }
+
+    @Operation(summary = "모든 모임에서 특정 id값으로 상세정보 보기")
+    @GetMapping("/hosts/{meetUpId}")
+    public SuccessResponse<MeetUp> getAllMeetUpById(@RequestParam Long meetUpId) {
+
+        MeetUp meetUp = meetUpService.getMeetUpById(meetUpId);
+        SuccessResponse<MeetUp> successResponse = SuccessResponse.onSuccess(200, meetUp);
         System.out.println(successResponse.getData());
         return successResponse;
     }

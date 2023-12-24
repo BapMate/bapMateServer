@@ -3,26 +3,28 @@ package com.bapMate.bapMateServer.domain.meeting.service;
 import com.bapMate.bapMateServer.domain.meeting.dto.request.MeetUpRequestDto;
 import com.bapMate.bapMateServer.domain.meeting.entity.MeetUp;
 import com.bapMate.bapMateServer.domain.meeting.enums.MeetUpStatus;
-import com.bapMate.bapMateServer.domain.meeting.exception.FullCapacityException;
-import com.bapMate.bapMateServer.domain.meeting.exception.MeetingNotFoundException;
-import com.bapMate.bapMateServer.domain.meeting.exception.NotAllowedToParticipateException;
+import com.bapMate.bapMateServer.domain.meeting.exception.*;
 import com.bapMate.bapMateServer.domain.meeting.repository.MeetUpRepository;
 import com.bapMate.bapMateServer.domain.participation.entity.Participation;
 import com.bapMate.bapMateServer.domain.participation.repository.ParticipationRepository;
 import com.bapMate.bapMateServer.domain.participation.service.ParticipationService;
 import com.bapMate.bapMateServer.domain.user.entity.User;
-import com.bapMate.bapMateServer.domain.user.exception.UserNotFoundException;
 import com.bapMate.bapMateServer.global.S3.S3Service;
+import com.bapMate.bapMateServer.global.exception.base.BaseException;
+import com.bapMate.bapMateServer.global.exception.dto.ErrorReason;
 import com.bapMate.bapMateServer.global.exception.handler.GlobalExceptionHandler;
+import com.bapMate.bapMateServer.global.response.ErrorResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.ErrorResponseException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+
+import static com.bapMate.bapMateServer.domain.meeting.exception.MeetingErrorCode.MEETING_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Service
@@ -31,6 +33,7 @@ public class MeetUpService {
     private final MeetUpRepository meetUpRepository;
     private final ParticipationService participationService;
     private final S3Service s3UploadService;
+    private final GlobalExceptionHandler globalException;
 
     //@Transactional
     public String uploadImage(MultipartFile file) throws IOException {
@@ -127,5 +130,15 @@ public class MeetUpService {
     @Transactional
     public void participateMeetUp(Long meetUpId) {
         meetUpRepository.incrementCurrentNumberOfPeople(meetUpId);
+    }
+
+    public MeetUp getMeetUpById(Long meetUpId) {
+        Optional<MeetUp> meetUp = meetUpRepository.findById(meetUpId);
+
+        if(!meetUp.isPresent() ){
+            throw MeetingNotFoundException.EXCEPTION;
+        }
+
+        return meetUp.get();
     }
 }
