@@ -22,7 +22,9 @@ import org.springframework.web.client.RestTemplate;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -81,14 +83,37 @@ public class ChatGptService {
     }
 
 
+    public String getQuestion(User user){
+        List<String> fields = getHobbyAndPersonality(user);
+        String question = "취미는" + fields.get(0) + "," + fields.get(1) + "이고 "
+                + "성격은" + fields.get(2) + "," +fields.get(3) + "인데"
+                + "#조용한식사,#취미공유,#맛집탐방,#자기계발,#왁자지껄중에추천하는모임=?,?";
+
+        return question;
+    }
+
     public List<String> getHobbyAndPersonality(User user){
         Hobby hobby = hobbyRepository.findByUser(user);
         Personality personality = personalityRepository.findByUser(user);
 
-        List<String> trueFields = getTrueBooleanFields(hobby);
+        // value가 true인 key를 list로 반환
+        List<String> hobbyFields = getTrueBooleanFields(hobby);
+        List<String> personalityFields = getTrueBooleanFields(personality);
 
+        if (hobbyFields.size() < 2 || personalityFields.size() < 2 ) {
+            throw new IllegalArgumentException("Invalid number of values requested");
+        }
 
+        // 랜덤값 선택
+        Random random = new Random();
+        int randomNum1 = random.nextInt(Math.min(hobbyFields.size(), personalityFields.size()));
+        int randomNum2 = random.nextInt(Math.min(hobbyFields.size(), personalityFields.size()));
 
+        // 해당하는 인덱스 값 추출
+        List<String> finalFields = List.of(hobbyFields.get(randomNum1), hobbyFields.get(randomNum2)
+                , personalityFields.get(randomNum1), personalityFields.get(randomNum2));
+
+        return finalFields;
     }
 
     public static List<String> getTrueBooleanFields(Object entity) {
