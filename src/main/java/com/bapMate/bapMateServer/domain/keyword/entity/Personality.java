@@ -21,28 +21,28 @@ public class Personality {
     private User user;
 
 
-    private Boolean humorous;
-    private Boolean lively;
-    private Boolean talkative;
-    private Boolean high_energy;
+    private int humorous;
+    private int lively;
+    private int talkative;
+    private int high_energy;
 
-    private Boolean constructive;
-    private Boolean self_improving;
-    private Boolean passionate;
-    private Boolean ambitious;
+    private int constructive;
+    private int self_improving;
+    private int passionate;
+    private int ambitious;
 
-    private Boolean empathetic;
-    private Boolean sensible;
-    private Boolean approachable;
-    private Boolean good_listener;
+    private int empathetic;
+    private int sensible;
+    private int approachable;
+    private int good_listener;
 
-    private Boolean shy;
-    private Boolean reserved;
-    private Boolean quiet;
-    private Boolean timid;
+    private int shy;
+    private int reserved;
+    private int quiet;
+    private int timid;
 
-    private Boolean spontaneous;
-    private Boolean adventurous;
-    private Boolean creative;
-    private Boolean good_under_pressure;
+    private int spontaneous;
+    private int adventurous;
+    private int creative;
+    private int good_under_pressure;
 }
