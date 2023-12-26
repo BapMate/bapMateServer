@@ -9,7 +9,9 @@ public enum MeetUpAtmosphere {
     FOOD_FIGHTER("#맛집탐방",1),
     SMALL_EATER("#소식",1),
     //굳이 이름이 필요할까? client에서 조용한 식사를 선택하면 0을 1로
-    HOBBIES("#취미",1);
+    HOBBIES("#취미공유",1),
+    LOUD("#왁자지껄",1);
+
 
     private final String title;
     private final int check;

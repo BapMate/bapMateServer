@@ -10,7 +10,9 @@ import com.bapMate.bapMateServer.domain.user.usecase.process.GenerateAccountToke
 import com.bapMate.bapMateServer.domain.user.usecase.process.LoginByIdTokenProcessor;
 import com.bapMate.bapMateServer.global.annotation.UseCase;
 import com.bapMate.bapMateServer.global.jwt.dto.UserInfoFromIdToken;
+import com.bapMate.bapMateServer.global.response.ErrorResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 
 @UseCase
 @RequiredArgsConstructor
@@ -31,10 +33,11 @@ public class LoginUseCase {
         return generateAccountTokenProcessor.createToken(user);
     }
 
-    private void validateUniversity(String email) {
+    private ResponseEntity<ErrorResponse> validateUniversity(String email) {
         User user = userAdaptor.findByEmail(email);
         if(!user.getUniversityIsAuthenticated()){
             throw UniversityNotAuthenticated.EXCEPTION;
         };
+        return null;
     }
 }

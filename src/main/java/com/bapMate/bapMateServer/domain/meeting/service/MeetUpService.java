@@ -1,8 +1,10 @@
 package com.bapMate.bapMateServer.domain.meeting.service;
 
 import com.bapMate.bapMateServer.domain.meeting.dto.request.MeetUpRequestDto;
+import com.bapMate.bapMateServer.domain.meeting.dto.response.MeetUpChatGptResponseDto;
 import com.bapMate.bapMateServer.domain.meeting.dto.response.MeetUpResponseDto;
 import com.bapMate.bapMateServer.domain.meeting.entity.MeetUp;
+import com.bapMate.bapMateServer.domain.meeting.enums.MeetUpAtmosphere;
 import com.bapMate.bapMateServer.domain.meeting.enums.MeetUpStatus;
 import com.bapMate.bapMateServer.domain.meeting.exception.*;
 import com.bapMate.bapMateServer.domain.meeting.repository.MeetUpRepository;
@@ -13,11 +15,14 @@ import com.bapMate.bapMateServer.domain.user.entity.User;
 import com.bapMate.bapMateServer.global.S3.S3Service;
 import com.bapMate.bapMateServer.global.exception.handler.GlobalExceptionHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -96,7 +101,7 @@ public class MeetUpService {
     }
 
     @Transactional
-    void validateCapacity(MeetUp meetUp, Long meetUpId) {
+    public void validateCapacity(MeetUp meetUp, Long meetUpId) {
         //meetUp의 count 갱신하기 다 찼으면 에러 발생시키기 -FullCapacity
         int number = meetUp.getCurrentNumberOfPeople();
         if(!(number < meetUp.getNumberOfPeople())){
@@ -155,5 +160,35 @@ public class MeetUpService {
                 .currentNumberOfPeople(meetUpData.getCurrentNumberOfPeople())
                 .build();
         return meetUpResponseDto;
+    }
+
+    public ResponseEntity<?> chatGptMeetUp(List<String> meetUps) {
+        List<MeetUpResponseDto> meetUpList = new ArrayList<>();
+        for (String meetUp : meetUps) {
+            System.out.println(meetUp);
+        }
+
+
+        for (String meetUpStr : meetUps) {
+            try {
+                MeetUpAtmosphere meetUpAtmosphere = MeetUpAtmosphere.valueOf(meetUpStr);
+                System.out.println(meetUpAtmosphere);
+                List<MeetUp> meetUpListForAtmosphere = meetUpRepository.findByMeetUpAtmosphere(meetUpAtmosphere);
+
+                // If there is at least one result, convert each MeetUp to MeetUpResponseDto and add to meetUpList
+                if (!meetUpListForAtmosphere.isEmpty()) {
+                    meetUpListForAtmosphere.stream()
+                            .map(this::changeToDto)
+                            .findFirst()
+                            .ifPresent(meetUpResponseDto -> meetUpList.add(meetUpResponseDto));
+                }
+            } catch (IllegalArgumentException e) {
+                throw MeetingNotFoundException.EXCEPTION;
+            }
+        }
+
+
+        MeetUpChatGptResponseDto responseDTO = new MeetUpChatGptResponseDto(meetUpList, "Meetups retrieved successfully");
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 }

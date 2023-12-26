@@ -24,6 +24,6 @@ public enum UserErrorCode implements BaseErrorCode {
 
     @Override
     public ErrorReason getErrorReason() {
-        return null;
+        return ErrorReason.of(httpStatus, code, message);
     }
 }
