@@ -25,4 +25,11 @@ public class User extends BaseTimeEntity {
     @Nullable
     private String universityName;
 
+    @Builder.Default
+    private Boolean universityIsAuthenticated = false;
+
+    public void authenticateUniversity() {
+        this.universityIsAuthenticated = true;
+    }
+
 }

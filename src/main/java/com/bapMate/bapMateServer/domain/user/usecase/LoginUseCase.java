@@ -4,6 +4,7 @@ import com.bapMate.bapMateServer.domain.user.adapter.UserAdaptor;
 import com.bapMate.bapMateServer.domain.user.dto.response.AccountTokenDto;
 import com.bapMate.bapMateServer.domain.user.entity.LoginType;
 import com.bapMate.bapMateServer.domain.user.entity.User;
+import com.bapMate.bapMateServer.domain.user.exception.UniversityNotAuthenticated;
 import com.bapMate.bapMateServer.domain.user.service.UserDomainService;
 import com.bapMate.bapMateServer.domain.user.usecase.process.GenerateAccountTokenProcessor;
 import com.bapMate.bapMateServer.domain.user.usecase.process.LoginByIdTokenProcessor;
@@ -25,7 +26,15 @@ public class LoginUseCase {
             return AccountTokenDto.notRegistered();
         }
 
+        validateUniversity(userInfo.getEmail());
         User user = userDomainService.login(LoginType.fromValue(loginType), userInfo.getEmail());
         return generateAccountTokenProcessor.createToken(user);
+    }
+
+    private void validateUniversity(String email) {
+        User user = userAdaptor.findByEmail(email);
+        if(!user.getUniversityIsAuthenticated()){
+            throw UniversityNotAuthenticated.EXCEPTION;
+        };
     }
 }
