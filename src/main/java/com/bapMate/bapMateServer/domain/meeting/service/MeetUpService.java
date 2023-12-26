@@ -102,7 +102,7 @@ public class MeetUpService {
     }
 
     @Transactional
-    void validateCapacity(MeetUp meetUp, Long meetUpId) {
+    public void validateCapacity(MeetUp meetUp, Long meetUpId) {
         //meetUp의 count 갱신하기 다 찼으면 에러 발생시키기 -FullCapacity
         int number = meetUp.getCurrentNumberOfPeople();
         if(!(number < meetUp.getNumberOfPeople())){

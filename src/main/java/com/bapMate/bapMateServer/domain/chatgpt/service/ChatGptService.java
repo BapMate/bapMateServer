@@ -62,12 +62,14 @@ public class ChatGptService {
         return responseEntity.getBody();
     }
 
-    public ResponseEntity askQuestion(String questionRequest){
+
+    public String askQuestion(User user){
         List<ChatGptMessage> messages = new ArrayList<>();
         messages.add(ChatGptMessage.builder()
                 .role(ChatGptConfig.ROLE)
-                .content(questionRequest)
+                .content(getQuestion(user))
                 .build());
+
         ChatGptResponseDto test = buildHttpEntity( new ChatGptRequestDto(
                 ChatGptConfig.CHAT_MODEL,
                 ChatGptConfig.MAX_TOKEN,
@@ -76,10 +78,11 @@ public class ChatGptService {
                 messages
                 //ChatGptConfig.TOP_P
         ));
-        //우리가 만들 response dto chatGptColorResponseDTO = .builder()
-        //         .color(test.getChoices().get(0).getMessage().getContent())
-         //       .build();
-        //return chatGptColorResponseDTO;
+
+        String contents = test.getChoices().get(0).getMessage().getContent(); // "#A, #B" 형태
+
+
+        return contents;
     }
 
 
@@ -87,7 +90,8 @@ public class ChatGptService {
         List<String> fields = getHobbyAndPersonality(user);
         String question = "취미는" + fields.get(0) + "," + fields.get(1) + "이고 "
                 + "성격은" + fields.get(2) + "," +fields.get(3) + "인데"
-                + "#조용한식사,#취미공유,#맛집탐방,#자기계발,#왁자지껄중에추천하는모임=?,?";
+                + "#조용한식사,#취미공유,#맛집탐방,#자기계발,#왁자지껄중에추천하는모임두개?단답으로";
+        System.out.println(question);
 
         return question;
     }
@@ -97,8 +101,8 @@ public class ChatGptService {
         Personality personality = personalityRepository.findByUser(user);
 
         // value가 true인 key를 list로 반환
-        List<String> hobbyFields = getTrueBooleanFields(hobby);
-        List<String> personalityFields = getTrueBooleanFields(personality);
+        List<String> hobbyFields = getFieldsWithIntValueOne(hobby);
+        List<String> personalityFields = getFieldsWithIntValueOne(personality);
 
         if (hobbyFields.size() < 2 || personalityFields.size() < 2 ) {
             throw new IllegalArgumentException("Invalid number of values requested");
@@ -116,24 +120,24 @@ public class ChatGptService {
         return finalFields;
     }
 
-    public static List<String> getTrueBooleanFields(Object entity) {
-        List<String> trueFields = new ArrayList<>();
+    public static List<String> getFieldsWithIntValueOne(Object entity) {
+        List<String> fieldsWithValueOne = new ArrayList<>();
         Class<?> entityClass = entity.getClass();
 
         for (Field field : entityClass.getDeclaredFields()) {
-            if (field.getType().equals(Boolean.class) && isFieldTrue(entity, field)) {
-                trueFields.add(field.getName());
+            if (field.getType().equals(int.class) && hasIntValueOne(entity, field)) {
+                fieldsWithValueOne.add(field.getName());
             }
         }
 
-        return trueFields;
+        return fieldsWithValueOne;
     }
 
-    private static boolean isFieldTrue(Object entity, Field field) {
+    private static boolean hasIntValueOne(Object entity, Field field) {
         try {
             field.setAccessible(true);
-            Boolean value = (Boolean) field.get(entity);
-            return value != null && value;
+            Integer value = (Integer) field.get(entity);
+            return value != null && value == 1;
         } catch (IllegalAccessException e) {
             // 예외 처리 로직 추가
             return false;
