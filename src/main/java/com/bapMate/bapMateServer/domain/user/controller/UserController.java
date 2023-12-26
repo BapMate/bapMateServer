@@ -35,4 +35,6 @@ public class UserController {
             SuccessResponse<Object> successResponse = SuccessResponse.onSuccess(200, newUser);
             return successResponse;
     }
+
+
 }

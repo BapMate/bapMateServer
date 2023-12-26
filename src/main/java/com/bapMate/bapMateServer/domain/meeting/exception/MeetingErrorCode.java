@@ -4,7 +4,7 @@ import com.bapMate.bapMateServer.global.exception.base.BaseErrorCode;
 import com.bapMate.bapMateServer.global.exception.dto.ErrorReason;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 
 import static com.bapMate.bapMateServer.global.constant.StaticValue.*;
 
@@ -24,4 +24,5 @@ public enum MeetingErrorCode implements BaseErrorCode {
     public ErrorReason getErrorReason() {
         return ErrorReason.of(status, code, reason);
     }
+
 }

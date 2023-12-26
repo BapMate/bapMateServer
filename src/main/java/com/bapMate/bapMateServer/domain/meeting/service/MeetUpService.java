@@ -1,26 +1,28 @@
 package com.bapMate.bapMateServer.domain.meeting.service;
 
 import com.bapMate.bapMateServer.domain.meeting.dto.request.MeetUpRequestDto;
+import com.bapMate.bapMateServer.domain.meeting.dto.response.MeetUpChatGptResponseDto;
+import com.bapMate.bapMateServer.domain.meeting.dto.response.MeetUpResponseDto;
 import com.bapMate.bapMateServer.domain.meeting.entity.MeetUp;
+import com.bapMate.bapMateServer.domain.meeting.enums.MeetUpAtmosphere;
 import com.bapMate.bapMateServer.domain.meeting.enums.MeetUpStatus;
-import com.bapMate.bapMateServer.domain.meeting.exception.FullCapacityException;
-import com.bapMate.bapMateServer.domain.meeting.exception.MeetingNotFoundException;
-import com.bapMate.bapMateServer.domain.meeting.exception.NotAllowedToParticipateException;
+import com.bapMate.bapMateServer.domain.meeting.exception.*;
 import com.bapMate.bapMateServer.domain.meeting.repository.MeetUpRepository;
 import com.bapMate.bapMateServer.domain.participation.entity.Participation;
 import com.bapMate.bapMateServer.domain.participation.repository.ParticipationRepository;
 import com.bapMate.bapMateServer.domain.participation.service.ParticipationService;
 import com.bapMate.bapMateServer.domain.user.entity.User;
-import com.bapMate.bapMateServer.domain.user.exception.UserNotFoundException;
 import com.bapMate.bapMateServer.global.S3.S3Service;
 import com.bapMate.bapMateServer.global.exception.handler.GlobalExceptionHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.ErrorResponseException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +33,7 @@ public class MeetUpService {
     private final MeetUpRepository meetUpRepository;
     private final ParticipationService participationService;
     private final S3Service s3UploadService;
+    private final GlobalExceptionHandler globalException;
 
     //@Transactional
     public String uploadImage(MultipartFile file) throws IOException {
@@ -44,6 +47,7 @@ public class MeetUpService {
     }
 
     public MeetUp uploadMeetUp(User user, MeetUpRequestDto requestDto) {
+        System.out.println(requestDto.getMeetUpAtmosphere());
         MeetUp meetUp = turnCheckToOne(requestDto);
         Participation participation = Participation.builder()
                 .meetUp(meetUp)
@@ -97,7 +101,7 @@ public class MeetUpService {
     }
 
     @Transactional
-    void validateCapacity(MeetUp meetUp, Long meetUpId) {
+    public void validateCapacity(MeetUp meetUp, Long meetUpId) {
         //meetUp의 count 갱신하기 다 찼으면 에러 발생시키기 -FullCapacity
         int number = meetUp.getCurrentNumberOfPeople();
         if(!(number < meetUp.getNumberOfPeople())){
@@ -127,5 +131,64 @@ public class MeetUpService {
     @Transactional
     public void participateMeetUp(Long meetUpId) {
         meetUpRepository.incrementCurrentNumberOfPeople(meetUpId);
+    }
+
+    public MeetUpResponseDto getMeetUpById(Long meetUpId) {
+        Optional<MeetUp> meetUp = meetUpRepository.findById(meetUpId);
+
+        if(!meetUp.isPresent() ){
+            throw MeetingNotFoundException.EXCEPTION;
+        }
+        MeetUp meetUpData = meetUp.get();
+        MeetUpResponseDto responseDto = changeToDto(meetUpData);
+        return responseDto;
+    }
+
+    private MeetUpResponseDto changeToDto(MeetUp meetUpData) {
+        MeetUpResponseDto meetUpResponseDto = MeetUpResponseDto.builder()
+                .meetUpAtmosphere(meetUpData.getMeetUpAtmosphere().getTitle())
+                .numberOfPeople(meetUpData.getNumberOfPeople())
+                .date(meetUpData.getDate())
+                .region(meetUpData.getRegion())
+                .chatRoomLink(meetUpData.getChatRoomLink())
+                .id(meetUpData.getId())
+                .restaurant(meetUpData.getRestaurant())
+                .representationImage(meetUpData.getRepresentationImage())
+                .regionAtmosphere(meetUpData.getRegionAtmosphere().getTitle())
+                .name(meetUpData.getName())
+                .introduce(meetUpData.getIntroduce())
+                .currentNumberOfPeople(meetUpData.getCurrentNumberOfPeople())
+                .build();
+        return meetUpResponseDto;
+    }
+
+    public ResponseEntity<?> chatGptMeetUp(List<String> meetUps) {
+        List<MeetUpResponseDto> meetUpList = new ArrayList<>();
+        for (String meetUp : meetUps) {
+            System.out.println(meetUp);
+        }
+
+
+        for (String meetUpStr : meetUps) {
+            try {
+                MeetUpAtmosphere meetUpAtmosphere = MeetUpAtmosphere.valueOf(meetUpStr);
+                System.out.println(meetUpAtmosphere);
+                List<MeetUp> meetUpListForAtmosphere = meetUpRepository.findByMeetUpAtmosphere(meetUpAtmosphere);
+
+                // If there is at least one result, convert each MeetUp to MeetUpResponseDto and add to meetUpList
+                if (!meetUpListForAtmosphere.isEmpty()) {
+                    meetUpListForAtmosphere.stream()
+                            .map(this::changeToDto)
+                            .findFirst()
+                            .ifPresent(meetUpResponseDto -> meetUpList.add(meetUpResponseDto));
+                }
+            } catch (IllegalArgumentException e) {
+                throw MeetingNotFoundException.EXCEPTION;
+            }
+        }
+
+
+        MeetUpChatGptResponseDto responseDTO = new MeetUpChatGptResponseDto(meetUpList, "Meetups retrieved successfully");
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 }

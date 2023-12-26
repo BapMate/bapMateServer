@@ -1,12 +1,14 @@
 package com.bapMate.bapMateServer.domain.meeting.controller;
 
 import com.bapMate.bapMateServer.domain.meeting.dto.request.MeetUpRequestDto;
+import com.bapMate.bapMateServer.domain.meeting.dto.response.MeetUpResponseDto;
 import com.bapMate.bapMateServer.domain.meeting.entity.MeetUp;
 import com.bapMate.bapMateServer.domain.meeting.service.MeetUpService;
 import com.bapMate.bapMateServer.domain.participation.entity.Participation;
 import com.bapMate.bapMateServer.domain.participation.repository.ParticipationRepository;
 import com.bapMate.bapMateServer.domain.participation.service.ParticipationService;
 import com.bapMate.bapMateServer.domain.user.entity.User;
+import com.bapMate.bapMateServer.global.exception.dto.ErrorReason;
 import com.bapMate.bapMateServer.global.response.SuccessResponse;
 import com.bapMate.bapMateServer.global.utils.AuthentiatedUserUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -51,32 +53,40 @@ public class MeetUpController {
     public SuccessResponse<Object> createMeetUp(@RequestBody MeetUpRequestDto meetUpRequestDto) {
         User user = authentiatedUserUtils.getCurrentUser();
 
-        meetUpService.uploadMeetUp(user, meetUpRequestDto);
-
+        MeetUp meet = meetUpService.uploadMeetUp(user, meetUpRequestDto);
+        System.out.println(meet.getMeetUpAtmosphere());
         SuccessResponse<Object> successResponse = SuccessResponse.onSuccess(200);
         return successResponse;
     }
     @Operation(summary = "생성한 모임을 확인합니다.")
     @GetMapping("/host")
-    public SuccessResponse<List<MeetUp>> getCreatedMeetUp() {
+    public SuccessResponse<List<MeetUpResponseDto>> getCreatedMeetUp() {
         User user = authentiatedUserUtils.getCurrentUser();
 
-        List<MeetUp> participation = participationService.getParticipation(user);
-        System.out.println(participation.size());
-        System.out.println(participation.get(0).getName());
-        SuccessResponse<List<MeetUp>> successResponse = SuccessResponse.onSuccess(200, participation);
+        List<MeetUpResponseDto> participation = participationService.getParticipation(user);
+        SuccessResponse<List<MeetUpResponseDto>> successResponse = SuccessResponse.onSuccess(200, participation);
+        System.out.println(successResponse.getData());
+        return successResponse;
+    }
+
+    @Operation(summary = "모든 모임에서 특정 id값으로 상세정보 보기")
+    @GetMapping("/hosts/{meetUpId}")
+    public SuccessResponse<MeetUpResponseDto> getAllMeetUpById(@RequestParam Long meetUpId) {
+
+        MeetUpResponseDto meetUp = meetUpService.getMeetUpById(meetUpId);
+        SuccessResponse<MeetUpResponseDto> successResponse = SuccessResponse.onSuccess(200, meetUp);
         System.out.println(successResponse.getData());
         return successResponse;
     }
 
     @Operation(summary = "참여한 모임을 확인합니다.")
     @GetMapping("/participate")
-    public SuccessResponse<List<MeetUp>> getParticipatedMeetUp() {
+    public SuccessResponse<List<MeetUpResponseDto>> getParticipatedMeetUp() {
         User user = authentiatedUserUtils.getCurrentUser();
 
-        List<MeetUp> participation = participationService.getParticipations(user);
+        List<MeetUpResponseDto> participation = participationService.getParticipations(user);
 
-        SuccessResponse<List<MeetUp>> successResponse = SuccessResponse.onSuccess(200, participation);
+        SuccessResponse<List<MeetUpResponseDto>> successResponse = SuccessResponse.onSuccess(200, participation);
         System.out.println(successResponse.getData());
         return successResponse;
     }

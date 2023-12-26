@@ -5,11 +5,15 @@ import com.bapMate.bapMateServer.domain.meeting.enums.MeetUpAtmosphere;
 import com.bapMate.bapMateServer.domain.meeting.enums.RegionAtmosphere;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
+@Getter
 public class MeetUpRequestDto {
     private String name;
     private String introduce;
@@ -22,6 +26,7 @@ public class MeetUpRequestDto {
     private String regionAtmosphere;
     private String representationImage;
 
+    @Builder
     public MeetUp toEntity() {
         RegionAtmosphere regionAtmosphereEnum = RegionAtmosphere.fromTitle(regionAtmosphere);
         MeetUpAtmosphere meetUpAtmosphereEnum = MeetUpAtmosphere.fromTitle(meetUpAtmosphere);
