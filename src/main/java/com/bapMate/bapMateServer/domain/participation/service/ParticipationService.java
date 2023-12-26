@@ -1,5 +1,6 @@
 package com.bapMate.bapMateServer.domain.participation.service;
 
+import com.bapMate.bapMateServer.domain.meeting.dto.response.MeetUpResponseDto;
 import com.bapMate.bapMateServer.domain.meeting.entity.MeetUp;
 import com.bapMate.bapMateServer.domain.meeting.enums.MeetUpStatus;
 import com.bapMate.bapMateServer.domain.meeting.exception.AlreadyParticipatedException;
@@ -24,14 +25,33 @@ import static com.bapMate.bapMateServer.global.exception.GlobalErrorCode.INVALID
 @AllArgsConstructor
 public class ParticipationService {
     private final ParticipationRepository participationRepository;
-    public List<MeetUp> getParticipation(User user) {
+    public List<MeetUpResponseDto> getParticipation(User user) {
         List<Participation> participation = validateUser(user);
-        List<MeetUp> hostMeetUps = participation.stream()
+        List<MeetUpResponseDto> hostMeetUps = participation.stream()
                 .filter(meet -> "HOST".equals(meet.getMeetUpStatus()))
                 .map(Participation::getMeetUp)
                 .distinct() // Ensure uniqueness
+                .map(this::convertToMeetUpResponseDto)
                 .collect(Collectors.toList());
         return hostMeetUps;
+    }
+
+    private MeetUpResponseDto convertToMeetUpResponseDto(MeetUp meetUpData) {
+        MeetUpResponseDto meetUpResponseDto = MeetUpResponseDto.builder()
+                .meetUpAtmosphere(meetUpData.getMeetUpAtmosphere().getTitle())
+                .numberOfPeople(meetUpData.getNumberOfPeople())
+                .date(meetUpData.getDate())
+                .region(meetUpData.getRegion())
+                .chatRoomLink(meetUpData.getChatRoomLink())
+                .id(meetUpData.getId())
+                .restaurant(meetUpData.getRestaurant())
+                .representationImage(meetUpData.getRepresentationImage())
+                .regionAtmosphere(meetUpData.getRegionAtmosphere().getTitle())
+                .name(meetUpData.getName())
+                .introduce(meetUpData.getIntroduce())
+                .currentNumberOfPeople(meetUpData.getCurrentNumberOfPeople())
+                .build();
+        return meetUpResponseDto;
     }
 
     private List<Participation> validateUser(User user) {
@@ -42,12 +62,13 @@ public class ParticipationService {
         return participation;
     }
 
-    public List<MeetUp> getParticipations(User user) {
+    public List<MeetUpResponseDto> getParticipations(User user) {
         List<Participation> participation = validateUser(user);
-        List<MeetUp> hostMeetUps = participation.stream()
+        List<MeetUpResponseDto> hostMeetUps = participation.stream()
                 .filter(meet -> "PARTICIPANT".equals(meet.getMeetUpStatus()))
                 .map(Participation::getMeetUp)
                 .distinct() // Ensure uniqueness
+                .map(this::convertToMeetUpResponseDto)
                 .collect(Collectors.toList());
         System.out.println(hostMeetUps.size());
         return hostMeetUps;

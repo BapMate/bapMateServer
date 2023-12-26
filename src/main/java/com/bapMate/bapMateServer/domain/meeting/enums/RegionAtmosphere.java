@@ -14,8 +14,10 @@ public enum RegionAtmosphere {
 
     // String 값을 Enum으로 변환하는 메서드
     public static RegionAtmosphere fromTitle(String title) {
+        System.out.println(title);
         for (RegionAtmosphere atmosphere : RegionAtmosphere.values()) {
             if (atmosphere.title.equals(title)) {
+                System.out.println(atmosphere);
                 return atmosphere;
             }
         }

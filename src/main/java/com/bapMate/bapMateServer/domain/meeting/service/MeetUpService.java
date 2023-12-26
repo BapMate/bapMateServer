@@ -1,6 +1,7 @@
 package com.bapMate.bapMateServer.domain.meeting.service;
 
 import com.bapMate.bapMateServer.domain.meeting.dto.request.MeetUpRequestDto;
+import com.bapMate.bapMateServer.domain.meeting.dto.response.MeetUpResponseDto;
 import com.bapMate.bapMateServer.domain.meeting.entity.MeetUp;
 import com.bapMate.bapMateServer.domain.meeting.enums.MeetUpStatus;
 import com.bapMate.bapMateServer.domain.meeting.exception.*;
@@ -10,12 +11,8 @@ import com.bapMate.bapMateServer.domain.participation.repository.ParticipationRe
 import com.bapMate.bapMateServer.domain.participation.service.ParticipationService;
 import com.bapMate.bapMateServer.domain.user.entity.User;
 import com.bapMate.bapMateServer.global.S3.S3Service;
-import com.bapMate.bapMateServer.global.exception.base.BaseException;
-import com.bapMate.bapMateServer.global.exception.dto.ErrorReason;
 import com.bapMate.bapMateServer.global.exception.handler.GlobalExceptionHandler;
-import com.bapMate.bapMateServer.global.response.ErrorResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,8 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-
-import static com.bapMate.bapMateServer.domain.meeting.exception.MeetingErrorCode.MEETING_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Service
@@ -47,6 +42,7 @@ public class MeetUpService {
     }
 
     public MeetUp uploadMeetUp(User user, MeetUpRequestDto requestDto) {
+        System.out.println(requestDto.getMeetUpAtmosphere());
         MeetUp meetUp = turnCheckToOne(requestDto);
         Participation participation = Participation.builder()
                 .meetUp(meetUp)
@@ -132,13 +128,32 @@ public class MeetUpService {
         meetUpRepository.incrementCurrentNumberOfPeople(meetUpId);
     }
 
-    public MeetUp getMeetUpById(Long meetUpId) {
+    public MeetUpResponseDto getMeetUpById(Long meetUpId) {
         Optional<MeetUp> meetUp = meetUpRepository.findById(meetUpId);
 
         if(!meetUp.isPresent() ){
             throw MeetingNotFoundException.EXCEPTION;
         }
+        MeetUp meetUpData = meetUp.get();
+        MeetUpResponseDto responseDto = changeToDto(meetUpData);
+        return responseDto;
+    }
 
-        return meetUp.get();
+    private MeetUpResponseDto changeToDto(MeetUp meetUpData) {
+        MeetUpResponseDto meetUpResponseDto = MeetUpResponseDto.builder()
+                .meetUpAtmosphere(meetUpData.getMeetUpAtmosphere().getTitle())
+                .numberOfPeople(meetUpData.getNumberOfPeople())
+                .date(meetUpData.getDate())
+                .region(meetUpData.getRegion())
+                .chatRoomLink(meetUpData.getChatRoomLink())
+                .id(meetUpData.getId())
+                .restaurant(meetUpData.getRestaurant())
+                .representationImage(meetUpData.getRepresentationImage())
+                .regionAtmosphere(meetUpData.getRegionAtmosphere().getTitle())
+                .name(meetUpData.getName())
+                .introduce(meetUpData.getIntroduce())
+                .currentNumberOfPeople(meetUpData.getCurrentNumberOfPeople())
+                .build();
+        return meetUpResponseDto;
     }
 }
