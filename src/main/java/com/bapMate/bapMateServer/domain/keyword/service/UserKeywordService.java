@@ -32,6 +32,8 @@ public class UserKeywordService {
     }
 
     public void setUserHobbyRe(User user, HobbyRequestDtoRe dto) {
+        if(hobbyRepository.existsByUser(user)) throw new IllegalArgumentException();
+
         Hobby hobby = new Hobby(user, dto.getStrings());
         hobbyRepository.save(hobby);
     }

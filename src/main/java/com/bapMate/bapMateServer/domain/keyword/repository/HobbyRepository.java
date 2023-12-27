@@ -11,4 +11,10 @@ import java.util.List;
 public interface HobbyRepository extends JpaRepository<Hobby, Long> {
 
     Hobby findByUser(User user);
+
+//    @Query("SELECT CASE WHEN COUNT(h) > 0 THEN true ELSE false END FROM Hobby h WHERE h.user = :user")
+//    boolean existsHobbyByUser(@Param("user") User user);
+    boolean existsByUser(User user);
+
+
 }
