@@ -15,7 +15,7 @@ import java.util.List;
 public class Hobby {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @Column(name = "hobby_id")
     private Long id;
 
     @Setter
